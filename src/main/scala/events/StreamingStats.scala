@@ -6,11 +6,10 @@ object StreamingStats extends App {
 
   val stream = new EventStream(5)
 
-	val actorSystem = ActorSystem("streaming_system")
-	val supervisor = actorSystem.actorOf(Supervisor.props)
+	val actorSystem = ActorSystem("streaming-system")
+	val requestHandler = actorSystem.actorOf(RequestHandler.props)
 
-  for {
-    i <- 1 to 20
-    requests = stream.tick
-  } println(requests)
+  for ( i <- 1 to 20; request <- stream.tick ) {
+		requestHandler ! request
+	}
 }
