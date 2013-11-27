@@ -35,6 +35,10 @@ class StatsCollector extends Actor with ActorLogging {
 	def averagePageViews : Int = {
 		pageViews.sum / pageViews.size
 	}
+
+  def averageDuration : Long = {
+    visitDuration.sum / visitDuration.size
+  }
 	
 	def increment(stat:String, key:String) = {
 		val innerMap = statMap.getOrElse(stat, scala.collection.mutable.Map[String,Int]())
