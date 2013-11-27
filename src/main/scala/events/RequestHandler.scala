@@ -2,7 +2,7 @@ package events
 
 import akka.actor._
 
-class RequestHandler extends Actor {
+class RequestHandler extends Actor with ActorLogging {
 	
 	import Messages._
 	
@@ -11,6 +11,7 @@ class RequestHandler extends Actor {
 	def receive : Receive = {
 		case msg @ Request(session, timestamp, url) => {
 			if(!actorMap.contains(session)) {
+				log.info(s"Created SessionActor for ${session}")
 				val newSessionActor = context.actorOf(SessionActor.props(session))
 				actorMap(session) = newSessionActor
 			}
