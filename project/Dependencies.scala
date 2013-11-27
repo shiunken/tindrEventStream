@@ -19,7 +19,7 @@ object Dependencies {
 
   import Library._
 
-  val eventSteam = List(
+  val eventStream = List(
     akkaActor,
     akkaSlf4j,
     logbackClassic,
