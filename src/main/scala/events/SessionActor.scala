@@ -2,7 +2,9 @@ package events
 
 import akka.actor._
 
-class SessionActor(session:Session) extends Actor with ActorLogging {
+class SessionActor(session:Session, statsCollector:ActorRef) extends Actor with ActorLogging {
+
+	import Messages._
 
 	val urlCount = scala.collection.mutable.Map[String,Int]()
 	val history = scala.collection.mutable.MutableList[Request]()
@@ -16,9 +18,14 @@ class SessionActor(session:Session) extends Actor with ActorLogging {
 				case None => urlCount(url) = 1
 			}
 		}
+		case InactiveSession(timestamp) => {
+			if(history.last.timestamp <= timestamp){
+				statsCollector ! AddStats(urlCount.toMap)
+			}
+		}
 	}
 }
 
 object SessionActor {
-	def props(session:Session) = Props(new SessionActor(session))
+	def props(session:Session, statsCollector:ActorRef) = Props(new SessionActor(session, statsCollector))
 }
