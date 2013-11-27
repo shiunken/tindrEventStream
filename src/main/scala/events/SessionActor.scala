@@ -9,12 +9,12 @@ class SessionActor(session:Session) extends Actor with ActorLogging {
 
 	def receive : Receive = {
 		case msg @ Request(session, timestamp, url) => {
+      log.info(s"${self.path.name} received request: " + msg.toString)
 			history += msg
 			urlCount.get(url) match {
 				case Some(value) => urlCount(url) = value + 1
 				case None => urlCount(url) = 1
 			}
-			log.info(history.toString)
 		}
 	}
 }
