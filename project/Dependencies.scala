@@ -19,7 +19,7 @@ object Dependencies {
 
   import Library._
 
-  val hakkyHour = List(
+  val eventSteam = List(
     akkaActor,
     akkaSlf4j,
     logbackClassic,
