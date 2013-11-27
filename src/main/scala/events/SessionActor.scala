@@ -6,7 +6,6 @@ class SessionActor(session:Session, statsCollector:ActorRef) extends Actor with 
 
 	import Messages._
 
-	val urlCount = scala.collection.mutable.Map[String,Int]()
 	val history = scala.collection.mutable.MutableList[Request]()
 
 	def receive : Receive = {
@@ -14,16 +13,23 @@ class SessionActor(session:Session, statsCollector:ActorRef) extends Actor with 
 		case msg @ Request(session, timestamp, url) => {
       log.info(s"${self.path.name} received request: " + msg.toString)
 			history += msg
-			urlCount.get(url) match {
-				case Some(value) => urlCount(url) = value + 1
-				case None => urlCount(url) = 1
-			}
 		}
 		
 		case InactiveSession(timestamp) => {
 			if(history.last.timestamp <= timestamp){
-				statsCollector ! AddStats(urlCount.toMap, duration, landingPage, sinkPage, browser, referrer)
+				statsCollector ! AddStats(urlCounts, duration, landingPage, sinkPage, browser, referrer)
 				context.stop(self)
+			}
+		}
+	}
+	
+	def urlCounts : Map[String,Int] = {
+		history.foldLeft(Map[String,Int]()) {
+			case (accum, req) =>
+			if(accum.contains(req.url)) {
+				accum + (req.url -> (accum(req.url) + 1))
+			} else {
+				accum + (req.url -> 1)
 			}
 		}
 	}
