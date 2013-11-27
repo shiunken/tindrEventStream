@@ -10,6 +10,7 @@ class StatsCollector extends Actor with ActorLogging {
 	
 	def receive : Receive = {
 		case AddStats(newStats) => {
+			//merge stats together
 			allStats = allStats ++ newStats.map{ case (k,v) => k -> (v + allStats.getOrElse(k,0)) }
 			log.info(s"new state : ${allStats}")
 		}

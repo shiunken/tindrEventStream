@@ -10,6 +10,7 @@ class SessionActor(session:Session, statsCollector:ActorRef) extends Actor with 
 	val history = scala.collection.mutable.MutableList[Request]()
 
 	def receive : Receive = {
+		
 		case msg @ Request(session, timestamp, url) => {
       log.info(s"${self.path.name} received request: " + msg.toString)
 			history += msg
@@ -18,9 +19,11 @@ class SessionActor(session:Session, statsCollector:ActorRef) extends Actor with 
 				case None => urlCount(url) = 1
 			}
 		}
+		
 		case InactiveSession(timestamp) => {
 			if(history.last.timestamp <= timestamp){
 				statsCollector ! AddStats(urlCount.toMap)
+				context.stop(self)
 			}
 		}
 	}
