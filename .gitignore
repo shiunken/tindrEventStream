@@ -8,8 +8,13 @@ lib_managed/
 src_managed/
 project/boot/
 project/plugins/project/
+.history
 
 # Scala-IDE specific
 .scala_dependencies
+.idea/
+.idea_modules/
+project/.idea/
+project/.idea_modules/
 
 .DS_Store
