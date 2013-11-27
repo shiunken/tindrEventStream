@@ -1,6 +1,6 @@
 package events
 
-object EventStreamSample extends App {
+object StreamingStats extends App {
 
   val stream = new EventStream(5)
 
