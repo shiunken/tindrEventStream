@@ -22,11 +22,26 @@ class SessionActor(session:Session, statsCollector:ActorRef) extends Actor with 
 		
 		case InactiveSession(timestamp) => {
 			if(history.last.timestamp <= timestamp){
-				statsCollector ! AddStats(urlCount.toMap)
+				statsCollector ! AddStats(urlCount.toMap, duration, landingPage, sinkPage, browser, referrer)
 				context.stop(self)
 			}
 		}
 	}
+	
+	def duration : Long = 
+		history.last.timestamp - history.head.timestamp
+		
+	def landingPage : String = 
+		history.head.url
+		
+	def sinkPage : String = 
+		history.last.url
+		
+	def browser : String = 
+		history.head.session.browser
+		
+	def referrer : String = 
+		history.head.session.referrer
 }
 
 object SessionActor {
