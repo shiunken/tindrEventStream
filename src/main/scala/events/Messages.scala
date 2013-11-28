@@ -11,4 +11,5 @@ object Messages {
 		browser:String, 
 		referer:String
 	)
+  case class StartChat
 }

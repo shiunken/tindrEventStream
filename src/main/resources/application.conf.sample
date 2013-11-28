@@ -1,0 +1,59 @@
+akka {
+  actor {
+		
+		provider = "akka.remote.RemoteActorRefProvider"
+	
+    debug {
+      receive = on
+      lifecycle = on
+    }
+		
+		deployment {
+      /supervisor/chatActor{
+        remote = "akka.tcp://streaming-system@172.18.137.105:2552"
+      }
+      /hakky-hour/waiter {
+        router = smallest-mailbox
+        resizer {
+          lower-bound = 2
+          upper-bound = 10
+      	}
+			}
+		}
+		default-dispatcher {
+      fork-join-executor {
+        parallelism-min = 2
+        parallelism-factor = 2.0
+        parallelism-max = 4
+      }
+      throughput = 5 // default
+    }
+  }
+	
+	remote {
+	  enabled-transports = ["akka.remote.netty.tcp"]
+	  netty.tcp {
+	    hostname = "172.18.137.213"
+	    port = 2552
+	  }
+	}
+	
+	loggers = [akka.event.slf4j.Slf4jLogger]
+	loglevel = debug
+}
+
+hakky-hour {
+
+	max-drink-count = 1000
+
+	guest {
+		finish-drink-duration = 20ms
+	}
+	barkeeper {
+		prepare-drink-duration = 2s
+		accuracy = 100
+	}
+	waiter {
+		max-complaints = 5
+	}
+}

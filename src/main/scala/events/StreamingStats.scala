@@ -8,5 +8,5 @@ import scala.concurrent.duration._
 object StreamingStats extends App {
 
 	val actorSystem = ActorSystem("streaming-system")
-  val supervisor = actorSystem.actorOf(SupervisorActor.props)
+  val supervisor = actorSystem.actorOf(SupervisorActor.props, "supervisor")
 }

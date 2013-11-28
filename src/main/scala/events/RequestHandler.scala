@@ -21,13 +21,16 @@ class RequestHandler(statsCollector:ActorRef) extends Actor with ActorLogging {
 		case msg @ Request(session, timestamp, url) => {
 			if(!sessionMap.contains(session)) {
 				log.info(s"Created SessionActor for ${session}")
-				val newActor = context.actorOf(SessionActor.props(session, statsCollector))
+        val newActor = context.actorOf(SessionActor.props(session, statsCollector))
 				sessionMap(session) = newActor
 				context.watch(newActor)
+        val chatActor = context.actorOf(ChatActor.props)
+        chatActor ! StartChat
 			}
 			val actor = sessionMap(session)
 			actor ! msg
-			context.system.scheduler.scheduleOnce(10 seconds, actor, InactiveSession(timestamp))
+
+      context.system.scheduler.scheduleOnce(10 seconds, actor, InactiveSession(timestamp))
 		}
 		
 		case Terminated(actor) => {
