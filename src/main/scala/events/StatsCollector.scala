@@ -29,6 +29,7 @@ class StatsCollector extends Actor with ActorLogging {
 			//merge stats together
 			urlVisits = urlVisits ++ newStats.map{ case (k,v) => k -> (v + urlVisits.getOrElse(k,0)) }
 			log.info(s"URL visits: ${urlVisits} map:${statMap} pageViews:${averagePageViews}")
+      log.info(s"topFive landing pages: " + topFiveStats("landingPage").toString())
 		}
 	}
 	
@@ -39,6 +40,11 @@ class StatsCollector extends Actor with ActorLogging {
   def averageDuration : Long = {
     visitDuration.sum / visitDuration.size
   }
+
+  def topFiveStats(key: String): Seq[(String, Int)] = {
+    statMap.getOrElse(key, Map.empty).toSeq.sortWith( (a, b) => a._2 > b._2 ).take(5)
+  }
+
 	
 	def increment(stat:String, key:String) = {
 		val innerMap = statMap.getOrElse(stat, scala.collection.mutable.Map[String,Int]())
