@@ -9,7 +9,13 @@ class RequestHandler(statsCollector:ActorRef) extends Actor with ActorLogging {
 	import context.dispatcher
 	
 	val sessionMap = scala.collection.mutable.Map[Session,ActorRef]()
-	
+
+  //test code
+  val stream = new EventStream(5)
+  for ( i <- 1 to 20; request <- stream.tick ) {
+    self ! request
+  }
+
 	def receive : Receive = {
 		
 		case msg @ Request(session, timestamp, url) => {

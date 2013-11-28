@@ -1,16 +1,24 @@
 package events
 
 import akka.actor._
+import events.Messages.GetRequestHandler
+import akka.pattern.ask
+import akka.util.Timeout
+import scala.concurrent.duration._
 
 object StreamingStats extends App {
 
-  val stream = new EventStream(5)
-	val actorSystem = ActorSystem("streaming-system")
-	
-	val statsCollector = actorSystem.actorOf(StatsCollector.props)
-	val requestHandler = actorSystem.actorOf(RequestHandler.props(statsCollector))
 
-  for ( i <- 1 to 20; request <- stream.tick ) {
-		requestHandler ! request
-	}
+	val actorSystem = ActorSystem("streaming-system")
+
+  val supervisor = actorSystem.actorOf(SupervisorActor.props)
+
+//  implicit val timeout = Timeout(5 seconds)
+//  val requestHandlerFuture = supervisor ? GetRequestHandler
+
+
+
+
+
+
 }
