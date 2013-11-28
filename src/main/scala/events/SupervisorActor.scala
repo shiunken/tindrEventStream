@@ -1,7 +1,6 @@
 package events
 
 import akka.actor._
-import events.Messages.GetRequestHandler
 import akka.actor.Terminated
 import akka.actor.SupervisorStrategy._
 

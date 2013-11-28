@@ -13,6 +13,7 @@ object Library {
   val akkaTestkit    = "com.typesafe.akka" %% "akka-testkit"    % Version.akka
   val logbackClassic = "ch.qos.logback"    %  "logback-classic" % Version.logback
   val scalaTest      = "org.scalatest"     %% "scalatest"       % Version.scalaTest
+	val akkaRemote 		 = "com.typesafe.akka" %% "akka-remote" 		% Version.akka
 }
 
 object Dependencies {
@@ -23,6 +24,7 @@ object Dependencies {
     akkaActor,
     akkaSlf4j,
     logbackClassic,
+		akkaRemote,
     scalaTest   % "test",
     akkaTestkit % "test"
   )
