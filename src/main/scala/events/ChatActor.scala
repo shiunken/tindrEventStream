@@ -9,6 +9,8 @@ import events.Messages.StartChat
  */
 class ChatActor extends Actor with ActorLogging {
 
+	log.info(s"Starting ChatActor under parent: ${self.path.parent}")
+
   override def receive: Receive = {
     case StartChat => {
       log.info("Starting a chat")
