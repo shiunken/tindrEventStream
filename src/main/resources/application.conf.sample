@@ -9,10 +9,12 @@ akka {
     }
 		
 		deployment {
-      /supervisor/chatActor{
+		
+      /supervisor/RequestHandler/ChatActor {
         remote = "akka.tcp://streaming-system@172.18.137.105:2552"
       }
-      /hakky-hour/waiter {
+    
+		  /hakky-hour/waiter {
         router = smallest-mailbox
         resizer {
           lower-bound = 2
