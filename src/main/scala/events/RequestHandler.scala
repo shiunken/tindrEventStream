@@ -1,6 +1,8 @@
 package events
 
 import akka.actor._
+import akka.remote.RemoteScope
+import scala.util._
 
 class RequestHandler(statsCollector:ActorRef) extends Actor with ActorLogging {
 	
@@ -16,7 +18,17 @@ class RequestHandler(statsCollector:ActorRef) extends Actor with ActorLogging {
     self ! request
   }
 
-  val chatActor = context.actorOf(ChatActor.props, "ChatActor")
+	// lookup an existing remote actor
+	val selection = context.actorSelection("akka.tcp://streaming-system@172.18.137.213:2552/user/supervisor/RequestHandler/ChatActor");
+	val chatActor1 = selection.resolveOne(10 seconds) onComplete {
+		case Success(result) => log.info("Looked up remote actor:"+result); result ! StartChat
+		case Failure(ex) => log.info("Exception:"+ex)
+	}
+
+	// create a new remote actor
+	val addr = AddressFromURIString("akka.tcp://streaming-system@172.18.137.213:2552")
+	val chatActor = context.actorOf(Props[ChatActor].withDeploy(Deploy(scope = RemoteScope(addr))), "Chatter")
+	log.info("created remote actor:"+chatActor)
 
 	def receive : Receive = {
 		
