@@ -16,6 +16,8 @@ class RequestHandler(statsCollector:ActorRef) extends Actor with ActorLogging {
     self ! request
   }
 
+  val chatActor = context.actorOf(ChatActor.props, "ChatActor")
+
 	def receive : Receive = {
 		
 		case msg @ Request(session, timestamp, url) => {
@@ -24,7 +26,6 @@ class RequestHandler(statsCollector:ActorRef) extends Actor with ActorLogging {
         val newActor = context.actorOf(SessionActor.props(session, statsCollector))
 				sessionMap(session) = newActor
 				context.watch(newActor)
-        val chatActor = context.actorOf(ChatActor.props)
         chatActor ! StartChat
 			}
 			val actor = sessionMap(session)
